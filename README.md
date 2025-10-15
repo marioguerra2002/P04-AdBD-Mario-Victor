@@ -1,57 +1,209 @@
-# P04 - Base de Datos para la Gestión de Viveros
+# Sistema de Gestión de Viveros 🌱
 
-Este repositorio contiene el script SQL para la creación y gestión de la base de datos `viveros` de acuerdo con el modelo Entidad-Relación (E-R) proporcionado.
+## Hecho por
 
-## 📄 Archivos del Proyecto
+Mario Guerra Pérez \
+Victor Rodríguez Dorta
 
-| Archivo | Descripción |
-| :--- | :--- |
-| `viveros.sql` | **Script principal de PostgreSQL.** Contiene la creación de la base de datos, la estructura de las tablas, las restricciones de integridad y las inserciones de datos. |
-| `P4_modelosRelacionales.drawio.jpg` | Imagen del modelo Entidad-Relación (E-R) en el que se basa la construcción de la base de datos. |
-| `README.md` | Este archivo. Documentación del proyecto. |
+## Descripción
 
-## ⚙️ Características de la Base de Datos
+Sistema de base de datos relacional diseñado para la gestión integral de viveros, incluyendo empleados, zonas de trabajo, productos, clientes, pedidos y un programa de fidelización "Tajinaste Plus".
 
-El script `viveros.sql` está diseñado para PostgreSQL y cumple con los siguientes requisitos:
+## Estructura de la Base de Datos
 
-1.  **Creación de la BD:** Incluye el comando para la creación de la base de datos `viveros`.
-2.  **Modelado E-R:** Construcción de las tablas basada en el modelo relacional del esquema de Viveros.
-3.  **Tipos de Datos:** Uso de tipos optimizados (ej: `SERIAL` para IDs, `NUMERIC` para valores monetarios, `TIMESTAMP WITH TIME ZONE` para marcas de tiempo).
-4.  **Restricciones de Integridad:**
-    * **Claves Primarias (`PRIMARY KEY`)** y **Claves Foráneas (`FOREIGN KEY`)** definidas correctamente.
-    * **Valores Nulos:** Uso estricto de `NOT NULL` en atributos obligatorios.
-    * **Restricciones `CHECK`:** Implementadas en columnas como `temperatura_promedio`, `salario`, y `cantidad` para validar rangos y valores permitidos.
-5.  **Integridad Referencial:** Uso de acciones de referencia para manejar las dependencias:
-    * **`ON DELETE CASCADE`:** En relaciones fuertes (ej: Si se borra un Vivero, se borran sus Plazas y Zonas asociadas).
-    * **`ON DELETE RESTRICT`:** En relaciones críticas (ej: No se puede eliminar un Producto si hay stock o pedidos asociados).
-    * **`ON DELETE SET NULL`:** En relaciones opcionales (ej: Si se borra un Vendedor, el `id_vendedor` en el Pedido se pone a `NULL`).
-6.  **Atributos Derivados:** Definidos mediante **VISTAS** (`VIEW`) para calcular información en tiempo real (ej: `Vista_Valor_Stock_Zona`, `Vista_Detalle_Pedido`).
-7.  **Población de Datos:** Incluye al menos 5 filas de ejemplo por tabla, cubriendo diferentes escenarios de restricciones.
-8.  **Operaciones `DELETE`:** Incluye ejemplos comentados y ejecutables para demostrar las acciones `CASCADE`, `RESTRICT` y `SET NULL`.
+### Diagrama Entidad-Relación
 
-## 🛠️ Instrucciones de Uso
+El sistema está compuesto por las siguientes tablas principales:
 
-Para ejecutar este script y montar la base de datos en tu entorno PostgreSQL:
+#### Tablas Base (Nivel 1)
+- **Empleado**: Gestión de personal del vivero
+- **Zona**: Áreas de trabajo del vivero
+- **Producto**: Catálogo de productos disponibles
+- **Tajinaste_plus**: Programa de descuentos y fidelización
 
-1.  **Conexión:** Abre tu cliente PostgreSQL (pgAdmin, DBeaver, psql, o la extensión de VS Code).
-2.  **Creación de la BD:** Ejecuta el comando `CREATE DATABASE viveros;` para crear la base de datos vacía.
-3.  **Conectar:** Conéctate a la nueva base de datos `viveros`.
-4.  **Ejecución:** Ejecuta el contenido completo del archivo `viveros.sql`. El script está diseñado para ser autocontenido, incluyendo la limpieza inicial (`DROP TABLE IF EXISTS`) para facilitar su re-ejecución.
+#### Tablas Dependientes (Nivel 2)
+- **Cliente**: Información de clientes
+- **TelefonoEmpleado**: Contactos de empleados
+- **TelefonoCliente**: Contactos de clientes
 
-### 🔍 Comprobaciones Post-Ejecución
+#### Tablas Relacionales (Nivel 3-5)
+- **Trabaja**: Relación empleados-zonas
+- **Stock**: Inventario por zona y producto
+- **Pedido**: Órdenes de compra
+- **Producto_Pedido**: Detalle de productos en pedidos
 
-Una vez ejecutado el script, puedes verificar la correcta creación de la base de datos con estas consultas:
+## Características Principales
 
+### Validaciones y Restricciones
+
+- ✅ **Salario mínimo**: Los empleados tienen un salario mínimo de 800€
+- ✅ **Precios positivos**: Los productos deben tener precio mayor a 0
+- ✅ **Fechas válidas**: Validación de rangos de fechas en Tajinaste Plus
+- ✅ **Descuentos**: Rango entre 0-100%
+- ✅ **Stock no negativo**: Control de inventario
+- ✅ **Cálculo automático**: El precio final de pedidos se calcula automáticamente
+
+### Integridad Referencial
+
+#### CASCADE (Eliminación en cascada)
+- Eliminar un empleado → elimina sus teléfonos
+- Eliminar un cliente → elimina sus teléfonos y pedidos asociados
+- Eliminar una zona → elimina registros de stock
+- Eliminar un producto → elimina registros de stock
+
+#### RESTRICT (Prevención de eliminación)
+- No se puede eliminar un empleado si trabaja en alguna zona
+- No se puede eliminar una zona si tiene empleados asignados
+- No se puede eliminar un pedido si tiene productos asociados
+- No se puede eliminar un producto si está en algún pedido
+
+#### SET NULL (Anulación)
+- Si se elimina un plan Tajinaste Plus → los clientes/pedidos mantienen el registro pero sin descuento
+
+## Instalación y Uso
+
+### Requisitos Previos
+
+- PostgreSQL 12 o superior
+- Cliente SQL (psql, pgAdmin, DBeaver, etc.)
+
+### Instalación
+
+1. Clona o descarga el repositorio
+2. Conecta a tu servidor PostgreSQL
+3. Ejecuta el script completo:
+```bash
+psql -U tu_usuario -d tu_base_datos -f script_viveros.sql
+```
+
+### Estructura del Script
+
+El script está organizado en 5 secciones:
 ```sql
--- Verificar los datos insertados en las tablas
-SELECT * FROM Vivero;
-SELECT * FROM Producto;
-SELECT * FROM Pedido;
+-- SECCIÓN 1: LIMPIEZA
+-- Elimina tablas existentes
 
--- Comprobar el atributo derivado del stock
-SELECT * FROM Vista_Valor_Stock_Zona;
+-- SECCIÓN 2: CREACIÓN DE TABLAS
+-- Crea la estructura de la base de datos
 
--- Comprobar el subtotal de cada línea de pedido
-SELECT * FROM Vista_Detalle_Pedido;
+-- SECCIÓN 3: INSERCIÓN DE DATOS
+-- Datos de ejemplo para pruebas
 
+-- SECCIÓN 4: VISUALIZACIÓN
+-- Consultas SELECT para ver los datos
 
+-- SECCIÓN 5: PRUEBAS DE ELIMINACIÓN
+-- Validación de restricciones
+```
+
+## Ejemplos de Datos
+
+El script incluye datos de ejemplo:
+
+- 5 empleados con salarios entre 950€ - 2100€
+- 5 zonas geográficas (Centro, Norte, Sur, Este, Oeste)
+- 5 productos (Café, Té, Chocolate, Miel, Galletas)
+- 5 planes Tajinaste Plus con descuentos del 10% al 30%
+- 5 clientes registrados
+- 5 pedidos de ejemplo
+
+## Consultas Útiles
+
+### Ver todos los pedidos con descuento aplicado
+```sql
+SELECT 
+    p.ID_Pedido,
+    c.nombre AS cliente,
+    p.precio_total,
+    p.descuento,
+    p.precio_final
+FROM Pedido p
+JOIN Cliente c ON p.ID_Cliente = c.ID_Cliente;
+```
+
+### Ver stock por zona
+```sql
+SELECT 
+    z.tipo_zona,
+    pr.nombre AS producto,
+    s.cantidad
+FROM Stock s
+JOIN Zona z ON s.ID_zona = z.ID_Zona
+JOIN Producto pr ON s.ID_producto = pr.ID_Producto;
+```
+
+### Ver empleados por zona
+```sql
+SELECT 
+    e.Nombre AS empleado,
+    z.tipo_zona,
+    t.productividad
+FROM Trabaja t
+JOIN Empleado e ON t.ID_Empleado = e.ID_Empleado
+JOIN Zona z ON t.ID_Zona = z.ID_Zona;
+```
+
+## Pruebas de Integridad
+
+El script incluye pruebas para validar:
+
+1. **Eliminación en Producto_Pedido**: Se puede eliminar una línea de pedido
+2. **Eliminación CASCADE**: Al eliminar un producto, se eliminan sus registros en Stock y Producto_Pedido
+3. **Restricciones CHECK**: Validación de salarios, precios y descuentos
+
+## Notas Importantes
+
+⚠️ **Advertencias**:
+- El script incluye `DROP TABLE IF EXISTS` que elimina datos existentes
+- Las eliminaciones CASCADE son irreversibles
+- Se recomienda hacer backup antes de ejecutar en producción
+
+## Modelo de Datos
+
+### Relaciones Principales
+```
+Empleado 1:N TelefonoEmpleado
+Empleado N:M Zona (a través de Trabaja)
+Zona N:M Producto (a través de Stock)
+Cliente 1:N Pedido
+Cliente 1:N TelefonoCliente
+Cliente N:1 Tajinaste_plus
+Pedido N:M Producto (a través de Producto_Pedido)
+```
+
+## Mantenimiento
+
+### Limpiar base de datos
+```sql
+-- Ejecutar la sección 1 del script
+DROP TABLE IF EXISTS Producto_Pedido;
+-- ... resto de tablas
+```
+
+### Reiniciar datos de ejemplo
+```sql
+-- Ejecutar secciones 1, 2 y 3 del script completo
+```
+
+## Contribuciones
+
+Para contribuir al proyecto:
+1. Realiza un fork del repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -am 'Añade nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
+
+## Licencia
+
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.
+
+## Contacto
+
+Para preguntas o soporte, contacta al equipo de desarrollo.
+
+---
+
+**Versión**: 1.0  
+**Última actualización**: Octubre 2025  
+**Base de datos**: PostgreSQL

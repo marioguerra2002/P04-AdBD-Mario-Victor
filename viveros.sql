@@ -449,14 +449,19 @@ INSERT INTO Producto_Pedido (ID_Pedido, ID_Producto, cantidad) VALUES
 -- #######################################################################
 
 -- Visualizar tablas (sobretodo las que tienen claves foráneas)
-
+-- Visualizar todas las tablas
+SELECT * FROM Empleado;
+SELECT * FROM TelefonoEmpleado;
+SELECT * FROM Zona;
+SELECT * FROM Trabaja;
 SELECT * FROM Producto;
-
+SELECT * FROM Stock;
+SELECT * FROM Tajinaste_plus;
+SELECT * FROM Cliente;
+SELECT * FROM TelefonoCliente;
+SELECT * FROM Pedido;
 SELECT * FROM Producto_Pedido;
 
-SELECT * FROM Pedido;
-
-SELECT * FROM Stock;
 
 -- #######################################################################
 -- #             SECCIÓN 4: PRUEBA DE ELIMINACIÓN DE DATOS               #
