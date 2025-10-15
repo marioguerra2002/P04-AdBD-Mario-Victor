@@ -53,3 +53,5 @@ SELECT * FROM Vista_Valor_Stock_Zona;
 
 -- Comprobar el subtotal de cada línea de pedido
 SELECT * FROM Vista_Detalle_Pedido;
+
+
