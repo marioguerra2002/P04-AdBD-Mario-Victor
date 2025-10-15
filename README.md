@@ -203,16 +203,5 @@ Para contribuir al proyecto:
 4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
 5. Abre un Pull Request
 
-## Licencia
 
-Este proyecto es de código abierto y está disponible bajo la licencia MIT.
-
-## Contacto
-
-Para preguntas o soporte, contacta al equipo de desarrollo.
-
----
-
-**Versión**: 1.0  
-**Última actualización**: Octubre 2025  
 **Base de datos**: PostgreSQL
