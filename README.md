@@ -9,6 +9,15 @@ Victor Rodríguez Dorta
 
 Sistema de base de datos relacional diseñado para la gestión integral de viveros, incluyendo empleados, zonas de trabajo, productos, clientes, pedidos y un programa de fidelización "Tajinaste Plus".
 
+## Diagramas
+
+### Diagrama P03
+![Diagrama P03](./P03.drawio.png)
+
+### Modelo Relacional
+![Modelo Relacional](./P4_modelosRelacionales.drawio-2.png)
+
+
 ## Estructura de la Base de Datos
 
 ### Diagrama Entidad-Relación
