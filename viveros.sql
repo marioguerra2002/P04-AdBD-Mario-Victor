@@ -442,3 +442,39 @@ INSERT INTO Producto_Pedido (ID_Pedido, ID_Producto, cantidad) VALUES
 (3, 2, 4),
 (4, 5, 1),
 (5, 4, 5);
+
+
+-- #######################################################################
+-- #             SECCIÓN 3: VISUALIZACIÓN DE DATOS                       #
+-- #######################################################################
+
+-- Visualizar tablas (sobretodo las que tienen claves foráneas)
+
+SELECT * FROM Producto;
+
+SELECT * FROM Producto_Pedido;
+
+SELECT * FROM Pedido;
+
+SELECT * FROM Stock;
+
+-- #######################################################################
+-- #             SECCIÓN 4: PRUEBA DE ELIMINACIÓN DE DATOS               #
+-- #######################################################################
+-- Prueba de eliminación en tablas con dependencias
+
+-- Eliminacion de producto pedido
+
+DELETE FROM Producto_Pedido WHERE ID_Pedido = 1 AND ID_Producto = 1;
+
+-- Mostrar la tabla para verificar
+SELECT * FROM Producto_Pedido;
+
+-- Eliminacion de producto (se debe de eliminar la entrada en stock y en producto_pedido)
+
+DELETE FROM Producto WHERE ID_Producto = 1;
+
+-- Mostrar las tablas para verificar
+SELECT * FROM Producto;
+SELECT * FROM Stock;
+SELECT * FROM Producto_Pedido;
